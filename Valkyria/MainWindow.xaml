@@ -1,0 +1,68 @@
+﻿<Window x:Class="Valkyria.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Valkyria"
+        mc:Ignorable="d"
+        Icon="icon.ico"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen"
+        Title="《崩坏3》女武神列表" Height="800" Width="1200">
+    <Window.Background>
+        <ImageBrush ImageSource="bg.jpg"/>
+    </Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="10,10,0,10">
+            <WrapPanel Name="ValkyriesAvatarBox"/>
+        </ScrollViewer>
+
+        <StackPanel Name="DetailPanel"
+                    Grid.Column="1"
+                    MouseUp="DetailPanel_MouseUp">
+            <Image Name="ValkyriaTachie" MaxWidth="450"/>
+            <Label Name="ValkyriaName"
+                   Content="领域装·白练"
+                   FontSize="40"
+                   Foreground="White"
+                   HorizontalAlignment="Center"/>
+            <GroupBox Header="背景资料" FontSize="20" Margin="5" Foreground="White">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="Margin" Value="10,5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Name="VName" Text="姓名：琪亚娜·卡斯兰娜"/>
+                    <TextBlock Name="VAge" Text="年龄：16 岁"/>
+                    <TextBlock Name="VArmor" Text="装甲：领域装·白练"/>
+                    <TextBlock Name="VSkill" Text="作战方式：枪斗术"/>
+                </StackPanel>
+            </GroupBox>
+            <Grid Name="SkillPanel" Margin="10,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="Image">
+                        <Setter Property="Margin" Value="5"/>
+                    </Style>
+                </Grid.Resources>
+                <Image Name="Skill1"/>
+                <Image Name="Skill2" Grid.Column="1"/>
+                <Image Name="Skill3" Grid.Column="2"/>
+                <Image Name="Skill4" Grid.Column="3"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
