@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using HtmlAgilityPack;
 using System.Diagnostics;
 
-namespace Valkyria
+namespace Valkyrie
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -68,7 +68,7 @@ namespace Valkyria
             var imgsrc = root.SelectSingleNode("//div[@class='big-img']");
 
             DetailPanel.Visibility = Visibility.Visible;
-            ValkyriaTachie.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode("//img").Attributes["src"].Value));
+            ValkyrieTachie.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode("//img").Attributes["src"].Value));
 
             // 显示女武神信息
             var info = root.SelectSingleNode("//div[@class='valkyries-detail-bd__card']/div");
@@ -76,7 +76,7 @@ namespace Valkyria
 
             var children = info.SelectNodes("div");
 
-            ValkyriaName.Content = children[0].InnerText.Trim();
+            ValkyrieName.Content = children[0].InnerText.Trim();
             VName.Text = children[2].InnerText.Trim();
             VAge.Text = children[3].InnerText.Trim();
             VArmor.Text = children[4].InnerText.Trim();
