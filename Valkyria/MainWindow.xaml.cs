@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using HtmlAgilityPack;
 using System.Diagnostics;
+using System.Windows.Media.Animation;
 
 namespace Valkyrie
 {
@@ -40,18 +33,62 @@ namespace Valkyrie
 
             var avatars = body.SelectNodes("//a").Where(x => x.Attributes["href"].Value.Contains("valkyries"));
 
+            int index = 0;
             foreach (var a in avatars)
             {
                 var imgsrc = a.SelectSingleNode(".//img").Attributes["src"].Value;
                 var link = a.Attributes["href"].Value;
 
+                // 将图片先添加到 border 里，便于修改 margin 且不会变动图片的中心位置
+                Border border = new Border
+                {
+                    Background = Brushes.Transparent,
+                    Height = 100,
+                    Width = 100
+                };
+
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(imgsrc));
-                image.Height = 100;
-                image.Margin = new Thickness(0, 10, 0, 10);
+                image.Margin = new Thickness(0);
                 image.Tag = "https://www.bh3.com" + link;
                 image.MouseUp += Avatar_Click;
-                ValkyriesAvatarBox.Children.Add(image);
+                
+                // 修改图片的光标样式
+                image.Cursor = Cursors.Hand;
+
+                image.Name = "image" + index;
+                this.RegisterName(image.Name, image);
+
+                ThicknessAnimation zoomin = new ThicknessAnimation
+                {
+                    From = new Thickness(0),
+                    To = new Thickness(-10),
+                    Duration = new Duration(TimeSpan.FromSeconds(.1))
+                };
+                ThicknessAnimation zoomout = new ThicknessAnimation
+                {
+                    From = new Thickness(-10),
+                    To = new Thickness(0),
+                    Duration = new Duration(TimeSpan.FromSeconds(.1))
+                };
+
+                Storyboard.SetTargetName(zoomin, image.Name);
+                Storyboard.SetTargetProperty(zoomin, new PropertyPath(Image.MarginProperty));
+                Storyboard.SetTargetName(zoomout, image.Name);
+                Storyboard.SetTargetProperty(zoomout, new PropertyPath(Image.MarginProperty));
+
+                Storyboard zoominStoryboard = new Storyboard();
+                zoominStoryboard.Children.Add(zoomin);
+                Storyboard zoomoutStoryboard = new Storyboard();
+                zoomoutStoryboard.Children.Add(zoomout);
+
+                image.MouseEnter += (object o, MouseEventArgs args) => zoominStoryboard.Begin(image);
+                image.MouseLeave += (object o, MouseEventArgs args) => zoomoutStoryboard.Begin(image);
+
+                border.Child = image;
+                ValkyriesAvatarBox.Children.Add(border);
+
+                index++;
             }
         }
 
