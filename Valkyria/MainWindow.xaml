@@ -4,65 +4,87 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Valkyrie"
-        mc:Ignorable="d"
+        Title="《崩坏3》女武神列表"
+        Width="1200"
+        Height="800"
         Icon="icon.ico"
         Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen"
-        Title="《崩坏3》女武神列表" Height="800" Width="1200">
+        mc:Ignorable="d">
     <Window.Background>
-        <ImageBrush ImageSource="bg.jpg"/>
+        <ImageBrush ImageSource="bg.jpg" />
     </Window.Background>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="10,10,0,10">
-            <WrapPanel Name="ValkyriesAvatarBox"/>
+        <ScrollViewer Margin="10,10,0,10" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <WrapPanel Name="ValkyriesAvatarBox" />
         </ScrollViewer>
 
-        <StackPanel Name="DetailPanel"
-                    Grid.Column="1"
-                    MouseUp="DetailPanel_MouseUp">
-            <Image Name="ValkyrieTachie" MaxWidth="450"/>
-            <Label Name="ValkyrieName"
-                   Content="领域装·白练"
-                   FontSize="40"
-                   Foreground="White"
-                   HorizontalAlignment="Center"/>
-            <GroupBox Header="背景资料" FontSize="20" Margin="5" Foreground="White">
-                <StackPanel>
-                    <StackPanel.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontSize" Value="16"/>
-                            <Setter Property="Margin" Value="10,5"/>
-                        </Style>
-                    </StackPanel.Resources>
-                    <TextBlock Name="VName" Text="姓名：琪亚娜·卡斯兰娜"/>
-                    <TextBlock Name="VAge" Text="年龄：16 岁"/>
-                    <TextBlock Name="VArmor" Text="装甲：领域装·白练"/>
-                    <TextBlock Name="VSkill" Text="作战方式：枪斗术"/>
-                </StackPanel>
-            </GroupBox>
-            <Grid Name="SkillPanel" Margin="10,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="Image">
-                        <Setter Property="Margin" Value="5"/>
-                    </Style>
-                </Grid.Resources>
-                <Image Name="Skill1"/>
-                <Image Name="Skill2" Grid.Column="1"/>
-                <Image Name="Skill3" Grid.Column="2"/>
-                <Image Name="Skill4" Grid.Column="3"/>
-            </Grid>
-        </StackPanel>
+        <Border Name="DetailPanel"
+                Grid.Column="1"
+                Width="350"
+                Margin="10"
+                Padding="10"
+                BorderThickness="1"
+                CornerRadius="10"
+                MouseUp="DetailPanel_MouseUp">
+            <Border.BorderBrush>
+                <SolidColorBrush Opacity="0.75" Color="White" />
+            </Border.BorderBrush>
+            <Border Padding="5" CornerRadius="10">
+                <Border.Background>
+                    <SolidColorBrush Opacity="0.25" Color="#197da4" />
+                </Border.Background>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                    <StackPanel>
+                        <Image Name="ValkyrieTachie" />
+                        <Label Name="ValkyrieName"
+                               HorizontalAlignment="Center"
+                               Content="领域装·白练"
+                               FontSize="32"
+                               FontFamily="Microsoft Yahei UI"
+                               FontWeight="Bold"
+                               FontStyle="Italic"
+                               Foreground="White" />
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="Margin" Value="10,5" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <Border Margin="0,10" Background="#3ed1f8" CornerRadius="4">
+                                <TextBlock Margin="10,5" Text="背景资料" FontWeight="Bold" />
+                            </Border>
+                            <TextBlock Name="VName" Text="姓名：琪亚娜·卡斯兰娜" />
+                            <TextBlock Name="VAge" Text="年龄：16 岁" />
+                            <TextBlock Name="VArmor" Text="装甲：领域装·白练" />
+                            <TextBlock Name="VSkill" Text="作战方式：枪斗术" />
+                        </StackPanel>
+                        <Grid Name="SkillPanel" Margin="10,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <Style TargetType="Image">
+                                    <Setter Property="Margin" Value="5" />
+                                </Style>
+                            </Grid.Resources>
+                            <Image Name="Skill1" />
+                            <Image Name="Skill2" Grid.Column="1" />
+                            <Image Name="Skill3" Grid.Column="2" />
+                            <Image Name="Skill4" Grid.Column="3" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Border>
     </Grid>
 </Window>

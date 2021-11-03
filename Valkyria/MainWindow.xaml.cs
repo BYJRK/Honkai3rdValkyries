@@ -8,12 +8,10 @@ using System.Windows.Media.Imaging;
 using HtmlAgilityPack;
 using System.Diagnostics;
 using System.Windows.Media.Animation;
+using Valkyrie.Utils;
 
 namespace Valkyrie
 {
-    /// <summary>
-    /// MainWindow.xaml 的交互逻辑
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -25,13 +23,14 @@ namespace Valkyrie
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var html = await WebHelper.LoadHtml("https://www.bh3.com/valkyries");
+            var html = await WebHelper.LoadHtml("https://www.bh3.com/valkyries").ConfigureAwait(true);
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
             var body = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='valkyries-item']");
 
-            var avatars = body.SelectNodes("//a").Where(x => x.Attributes["href"].Value.Contains("valkyries"));
+            var avatars = body.SelectNodes("//a")
+                .Where(x => x.Attributes["href"].Value.Contains("valkyries"));
 
             int index = 0;
             foreach (var a in avatars)
@@ -105,10 +104,10 @@ namespace Valkyrie
             var imgsrc = root.SelectSingleNode("//div[@class='big-img']");
 
             DetailPanel.Visibility = Visibility.Visible;
-            ValkyrieTachie.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode("//img").Attributes["src"].Value));
+            ValkyrieTachie.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode(".//img").Attributes["src"].Value));
 
             // 显示女武神信息
-            var info = root.SelectSingleNode("//div[@class='valkyries-detail-bd__card']/div");
+            var info = root.SelectSingleNode(".//div[@class='valkyries-detail-bd__card']/div");
             Debug.WriteLine(info);
 
             var children = info.SelectNodes("div");
