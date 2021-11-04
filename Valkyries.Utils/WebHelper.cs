@@ -6,16 +6,18 @@ namespace Valkyrie.Utils
 {
     public static class WebHelper
     {
-        public static async Task<string> LoadHtml(string url)
+        public static async Task<string> LoadHtmlAsync(Uri url)
         {
             HttpClient client = new HttpClient();
-            using (var response = await client.GetAsync(url))
-            {
-                if (response.IsSuccessStatusCode)
-                    return response.Content.ReadAsStringAsync().Result;
-                else
-                    throw new Exception(response.ReasonPhrase);
-            }
+            HttpResponseMessage response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            return responseBody;
+        }
+
+        public static async Task<string> LoadHtmlAsync(string url)
+        {
+            return await LoadHtmlAsync(new Uri(url));
         }
     }
 }

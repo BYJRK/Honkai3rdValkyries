@@ -9,6 +9,8 @@ using HtmlAgilityPack;
 using System.Diagnostics;
 using System.Windows.Media.Animation;
 using Valkyrie.Utils;
+using System.IO;
+using Forms = System.Windows.Forms;
 
 namespace Valkyrie
 {
@@ -23,7 +25,7 @@ namespace Valkyrie
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var html = await WebHelper.LoadHtml("https://www.bh3.com/valkyries").ConfigureAwait(true);
+            var html = await WebHelper.LoadHtmlAsync("https://www.bh3.com/valkyries").ConfigureAwait(true);
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
@@ -46,43 +48,13 @@ namespace Valkyrie
                     Width = 100
                 };
 
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(imgsrc));
-                image.Margin = new Thickness(0);
-                image.Tag = "https://www.bh3.com" + link;
-                image.MouseUp += Avatar_Click;
-                
-                // 修改图片的光标样式
-                image.Cursor = Cursors.Hand;
-
-                image.Name = "image" + index;
-                this.RegisterName(image.Name, image);
-
-                ThicknessAnimation zoomin = new ThicknessAnimation
+                Image image = new Image
                 {
-                    From = new Thickness(0),
-                    To = new Thickness(-10),
-                    Duration = new Duration(TimeSpan.FromSeconds(.1))
+                    Source = new BitmapImage(new Uri(imgsrc)),
+                    Tag = "https://www.bh3.com" + link,
+                    Name = "image" + index
                 };
-                ThicknessAnimation zoomout = new ThicknessAnimation
-                {
-                    From = new Thickness(-10),
-                    To = new Thickness(0),
-                    Duration = new Duration(TimeSpan.FromSeconds(.1))
-                };
-
-                Storyboard.SetTargetName(zoomin, image.Name);
-                Storyboard.SetTargetProperty(zoomin, new PropertyPath(Image.MarginProperty));
-                Storyboard.SetTargetName(zoomout, image.Name);
-                Storyboard.SetTargetProperty(zoomout, new PropertyPath(Image.MarginProperty));
-
-                Storyboard zoominStoryboard = new Storyboard();
-                zoominStoryboard.Children.Add(zoomin);
-                Storyboard zoomoutStoryboard = new Storyboard();
-                zoomoutStoryboard.Children.Add(zoomout);
-
-                image.MouseEnter += (object o, MouseEventArgs args) => zoominStoryboard.Begin(image);
-                image.MouseLeave += (object o, MouseEventArgs args) => zoomoutStoryboard.Begin(image);
+                //this.RegisterName(image.Name, image);
 
                 border.Child = image;
                 ValkyriesAvatarBox.Children.Add(border);
@@ -95,7 +67,7 @@ namespace Valkyrie
         {
             var image = sender as Image;
 
-            var html = await WebHelper.LoadHtml((string)image.Tag);
+            var html = await WebHelper.LoadHtmlAsync((string)image.Tag).ConfigureAwait(true);
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var root = doc.DocumentNode;
@@ -104,7 +76,7 @@ namespace Valkyrie
             var imgsrc = root.SelectSingleNode("//div[@class='big-img']");
 
             DetailPanel.Visibility = Visibility.Visible;
-            ValkyrieTachie.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode(".//img").Attributes["src"].Value));
+            ValkyrieProtrait.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode(".//img").Attributes["src"].Value));
 
             // 显示女武神信息
             var info = root.SelectSingleNode(".//div[@class='valkyries-detail-bd__card']/div");
@@ -128,7 +100,30 @@ namespace Valkyrie
 
         private void DetailPanel_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            DetailPanel.Visibility = Visibility.Collapsed;
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DetailPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            using (var open = new Forms.SaveFileDialog())
+            {
+                open.Filter = "PNG|*.png";
+                open.FileName = ValkyrieName.Content.ToString() + ".png";
+                if (open.ShowDialog() == Forms.DialogResult.OK)
+                {
+                    var path = open.FileName;
+                    var bitmap = ValkyrieProtrait.Source as BitmapImage;
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    using (var stream = File.Create(path))
+                    {
+                        encoder.Save(stream);
+                    }
+                }
+            }
         }
     }
 }
