@@ -77,6 +77,7 @@ namespace Valkyrie
 
             DetailPanel.Visibility = Visibility.Visible;
             ValkyrieProtrait.Source = new BitmapImage(new Uri(imgsrc.SelectSingleNode(".//img").Attributes["src"].Value));
+            ValkyrieName.Tag = image.Tag;
 
             // 显示女武神信息
             var info = root.SelectSingleNode(".//div[@class='valkyries-detail-bd__card']/div");
@@ -84,7 +85,7 @@ namespace Valkyrie
 
             var children = info.SelectNodes("div");
 
-            ValkyrieName.Content = children[0].InnerText.Trim();
+            ValkyrieName.Text = children[0].InnerText.Trim();
             VName.Text = children[2].InnerText.Trim();
             VAge.Text = children[3].InnerText.Trim();
             VArmor.Text = children[4].InnerText.Trim();
@@ -111,7 +112,7 @@ namespace Valkyrie
             using (var open = new Forms.SaveFileDialog())
             {
                 open.Filter = "PNG|*.png";
-                open.FileName = ValkyrieName.Content.ToString() + ".png";
+                open.FileName = ValkyrieName.Text + ".png";
                 if (open.ShowDialog() == Forms.DialogResult.OK)
                 {
                     var path = open.FileName;
@@ -146,6 +147,13 @@ namespace Valkyrie
                 e.Handled = true;
                 ViewFullSize_Click(null, null);
             }
+        }
+
+        private void ValkyrieName_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var url = (sender as TextBlock).Tag.ToString();
+            Process.Start(url);
+            e.Handled = true;
         }
     }
 }
