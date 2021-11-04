@@ -21,20 +21,14 @@
             <EventTrigger RoutedEvent="MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
-                        <ThicknessAnimation Storyboard.TargetProperty="Margin"
-                                            From="0"
-                                            To="-10"
-                                            Duration="0:0:0.1" />
+                        <ThicknessAnimation Storyboard.TargetProperty="Margin" To="-8" Duration="0:0:0.1" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
             <EventTrigger RoutedEvent="MouseLeave">
                 <BeginStoryboard>
                     <Storyboard>
-                        <ThicknessAnimation Storyboard.TargetProperty="Margin"
-                                            From="-10"
-                                            To="0"
-                                            Duration="0:0:0.1" />
+                        <ThicknessAnimation Storyboard.TargetProperty="Margin" To="0" Duration="0:0:0.1" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>

@@ -63,9 +63,13 @@
                                 <Setter Property="Foreground" Value="White" />
                             </Style>
                         </StackPanel.Resources>
-                        <Image Name="ValkyrieProtrait" Margin="-15,-18,-15,0" RenderOptions.BitmapScalingMode="Fant">
+                        <Image Name="ValkyrieProtrait"
+                               Margin="-15,-18,-15,0"
+                               RenderOptions.BitmapScalingMode="Fant"
+                               MouseUp="ValkyrieProtrait_MouseUp">
                             <Image.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="查看大图" Click="ViewFullSize_Click" />
                                     <MenuItem Header="保存图片" Click="SaveImage_Click" />
                                 </ContextMenu>
                             </Image.ContextMenu>
@@ -95,13 +99,23 @@
                                 </Style>
                             </UniformGrid.Resources>
                             <Image Name="Skill1" />
-                            <Image Name="Skill2" Grid.Column="1" />
-                            <Image Name="Skill3" Grid.Column="2" />
-                            <Image Name="Skill4" Grid.Column="3" />
+                            <Image Name="Skill2" />
+                            <Image Name="Skill3" />
+                            <Image Name="Skill4" />
                         </UniformGrid>
                     </StackPanel>
                 </ScrollViewer>
             </Border>
+        </Border>
+
+        <Border Name="BigImgBox"
+                Grid.ColumnSpan="2"
+                MouseUp="BigImgBox_Click"
+                Visibility="Hidden">
+            <Border.Background>
+                <SolidColorBrush Opacity="0.75" Color="Black" />
+            </Border.Background>
+            <Image RenderOptions.BitmapScalingMode="Fant" />
         </Border>
     </Grid>
 </Window>

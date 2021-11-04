@@ -125,5 +125,27 @@ namespace Valkyrie
                 }
             }
         }
+
+        private void ViewFullSize_Click(object sender, RoutedEventArgs e)
+        {
+            BigImgBox.Visibility = Visibility.Visible;
+            var img = BigImgBox.Child as Image;
+            img.Source = ValkyrieProtrait.Source;
+        }
+
+        private void BigImgBox_Click(object sender, MouseButtonEventArgs e)
+        {
+            var border = sender as Border;
+            border.Visibility = Visibility.Collapsed;
+        }
+
+        private void ValkyrieProtrait_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                e.Handled = true;
+                ViewFullSize_Click(null, null);
+            }
+        }
     }
 }
