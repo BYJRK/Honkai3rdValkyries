@@ -16,8 +16,7 @@ namespace Valkyrie.ViewModel
 {
     class MainWindowViewModel : ViewModelBase
     {
-        public ObservableCollection<Character> Characters { get; private set; }
-        public Character SelectedCharacter { get; private set; }
+        public ObservableCollection<Character> Characters { get; private set; } = new ObservableCollection<Character>();
         public ICommand AvatarBoxClick { get; private set; }
         public ICommand ViewLargeImage { get; private set; }
         public ICommand HideLargeImage { get; private set; }
@@ -26,18 +25,18 @@ namespace Valkyrie.ViewModel
         public ICommand Loaded { get; private set; }
         public ICommand ViewPage { get; private set; }
 
+        public SidePanelViewModel SidePanelViewModel { get; set; } = new SidePanelViewModel();
+
         public Visibility LargeImageVisibility { get; private set; } = Visibility.Hidden;
 
         public MainWindowViewModel()
         {
-            Characters = new ObservableCollection<Character>();
-
             AvatarBoxClick = new RelayParamCommand(async (obj) =>
             {
                 var character = obj as Character;
                 if (character.ImageSource is null)
                     await character?.LoadInfoAsync();
-                SelectedCharacter = character;
+                SidePanelViewModel.SelectedCharacter = character;
             });
 
             ViewLargeImage = new RelayCommand(() => LargeImageVisibility = Visibility.Visible);
@@ -48,11 +47,13 @@ namespace Valkyrie.ViewModel
                 using (var open = new Forms.SaveFileDialog())
                 {
                     open.Filter = "PNG|*.png";
-                    open.FileName = SelectedCharacter.Name + ".png";
+                    open.FileName = SidePanelViewModel.SelectedCharacter.Name + ".png";
                     if (open.ShowDialog() == Forms.DialogResult.OK)
                     {
                         var path = open.FileName;
-                        var bitmap = (obj as Image).Source as BitmapImage;
+                        var bitmap = (obj as Image)?.Source as BitmapImage;
+                        if (bitmap is null)
+                            bitmap = SidePanelViewModel.SelectedCharacter.ImageSource as BitmapImage;
                         var encoder = new PngBitmapEncoder();
                         encoder.Frames.Add(BitmapFrame.Create(bitmap));
                         using (var stream = File.Create(path))
@@ -63,13 +64,17 @@ namespace Valkyrie.ViewModel
                 }
             });
 
-            HideSidePanel = new RelayCommand(() => SelectedCharacter = null);
+            HideSidePanel = new RelayCommand(() => SidePanelViewModel.SelectedCharacter = null);
 
             Loaded = new RelayCommand(async () => await LoadCharactersAsync());
 
-            ViewPage = new RelayCommand(() => Process.Start(SelectedCharacter.PageUrl));
+            ViewPage = new RelayCommand(() => Process.Start(SidePanelViewModel.SelectedCharacter.PageUrl));
 
-            //Task.Run(LoadCharactersAsync).GetAwaiter().GetResult();
+            SidePanelViewModel.ViewLargeImage = ViewLargeImage;
+            SidePanelViewModel.HideLargeImage = HideLargeImage;
+            SidePanelViewModel.HideSidePanel = HideSidePanel;
+            SidePanelViewModel.SaveLargeImage = SaveLargeImage;
+            SidePanelViewModel.ViewPage = ViewPage;
         }
 
         public async Task LoadCharactersAsync()
