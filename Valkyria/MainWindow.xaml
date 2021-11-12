@@ -4,18 +4,30 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Valkyrie"
+        xmlns:vm="clr-namespace:Valkyrie.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:conv="clr-namespace:Valkyrie.ValueConverters"
+        Name="Window"
         Title="《崩坏3》女武神列表"
         Width="1200"
         Height="800"
         Icon="icon.ico"
-        Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Loaded}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Style/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!--<conv:IsNullConverter x:Key="IsNullConverter" />-->
         </ResourceDictionary>
     </Window.Resources>
     <Window.Background>
@@ -27,23 +39,41 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <ScrollViewer Margin="10,10,0,10" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
-            <WrapPanel Name="ValkyriesAvatarBox">
-                <WrapPanel.Resources>
-                    <Style TargetType="Image" BasedOn="{StaticResource AvatarBox}">
-                        <EventSetter Event="MouseUp" Handler="Avatar_Click" />
-                    </Style>
-                </WrapPanel.Resources>
-            </WrapPanel>
+            <ItemsControl ItemsSource="{Binding Characters}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="100" Height="100">
+                            <Image Source="{Binding AvatarSource}" Style="{StaticResource AvatarBox}">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ElementName=Window, Path=DataContext.AvatarBoxClick}" CommandParameter="{Binding}" />
+                                </Image.InputBindings>
+                            </Image>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
-        <Border Name="DetailPanel"
-                Grid.Column="1"
+        <Border Grid.Column="1"
                 Width="350"
                 Margin="10"
                 Padding="10"
                 BorderThickness="1"
-                CornerRadius="10"
-                MouseUp="DetailPanel_MouseUp">
+                CornerRadius="10">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedCharacter}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Border.BorderBrush>
                 <SolidColorBrush Opacity="0.75" Color="White" />
             </Border.BorderBrush>
@@ -54,68 +84,92 @@
                 <Border.Background>
                     <SolidColorBrush Opacity="0.25" Color="#197da4" />
                 </Border.Background>
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
-                    <StackPanel>
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="FontSize" Value="16" />
-                                <Setter Property="Margin" Value="10,5" />
-                                <Setter Property="Foreground" Value="White" />
-                            </Style>
-                        </StackPanel.Resources>
-                        <Image Name="ValkyrieProtrait"
-                               Margin="-15,-15,-15,0"
-                               RenderOptions.BitmapScalingMode="Fant"
-                               Cursor="Hand"
-                               MouseUp="ValkyrieProtrait_MouseUp">
-                            <Image.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="查看大图" Click="ViewFullSize_Click" />
-                                    <MenuItem Header="保存图片" Click="SaveImage_Click" />
-                                </ContextMenu>
-                            </Image.ContextMenu>
-                        </Image>
-                        <TextBlock Name="ValkyrieName"
-                                   Margin="0,10,0,0"
-                                   Text="领域装·白练"
-                                   MouseUp="ValkyrieName_MouseUp"
-                                   Style="{StaticResource NameText}" />
-                        <Grid Margin="0,10">
-                            <Border Style="{StaticResource HeaderBox}" />
-                            <TextBlock Text="背景资料" Style="{StaticResource HeaderText}" />
-                        </Grid>
-                        <TextBlock Name="VName" Text="姓名：琪亚娜·卡斯兰娜" />
-                        <TextBlock Name="VAge" Text="年龄：16 岁" />
-                        <TextBlock Name="VArmor" Text="装甲：领域装·白练" />
-                        <TextBlock Name="VSkill" Text="作战方式：枪斗术" />
-                        <Grid Margin="0,10">
-                            <Border Style="{StaticResource HeaderBox}" />
-                            <TextBlock Text="角色招式" Style="{StaticResource HeaderText}" />
-                        </Grid>
-                        <UniformGrid Name="SkillPanel" Margin="10,0" Columns="4">
-                            <UniformGrid.Resources>
-                                <Style TargetType="Image">
-                                    <Setter Property="Margin" Value="5" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="Margin" Value="10,5" />
+                                    <Setter Property="Foreground" Value="White" />
                                 </Style>
-                            </UniformGrid.Resources>
-                            <Image Name="Skill1" />
-                            <Image Name="Skill2" />
-                            <Image Name="Skill3" />
-                            <Image Name="Skill4" />
-                        </UniformGrid>
+                            </StackPanel.Resources>
+                            <Image Name="ValkyrieProtrait"
+                                   Margin="-15,-15,-15,0"
+                                   RenderOptions.BitmapScalingMode="Fant"
+                                   Source="{Binding SelectedCharacter.ImageSource}"
+                                   Cursor="Hand">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ViewLargeImage}" />
+                                </Image.InputBindings>
+                                <Image.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="查看大图" Command="{Binding ViewLargeImage}" />
+                                        <MenuItem Header="保存图片" Command="{Binding SaveLargeImage}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget}" />
+                                    </ContextMenu>
+                                </Image.ContextMenu>
+                            </Image>
+                            <TextBlock Name="ValkyrieName"
+                                       Margin="0,10,0,0"
+                                       Text="{Binding SelectedCharacter.Armor}"
+                                       Style="{StaticResource NameText}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ViewPage}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                            <Grid Margin="0,10">
+                                <Border Style="{StaticResource HeaderBox}" />
+                                <TextBlock Text="背景资料" Style="{StaticResource HeaderText}" />
+                            </Grid>
+                            <TextBlock Text="{Binding SelectedCharacter.Name}" />
+                            <TextBlock Text="{Binding SelectedCharacter.Birthday}" />
+                            <TextBlock Text="{Binding SelectedCharacter.Armor}" />
+                            <TextBlock Text="{Binding SelectedCharacter.Skill}" />
+                            <Grid Margin="0,10">
+                                <Border Style="{StaticResource HeaderBox}" />
+                                <TextBlock Text="角色招式" Style="{StaticResource HeaderText}" />
+                            </Grid>
+                            <UniformGrid Name="SkillPanel" Margin="10,0" Columns="4">
+                                <UniformGrid.Resources>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Margin" Value="5" />
+                                    </Style>
+                                </UniformGrid.Resources>
+                                <Image Source="{Binding SelectedCharacter.SkillsSource[0]}" />
+                                <Image Source="{Binding SelectedCharacter.SkillsSource[1]}" />
+                                <Image Source="{Binding SelectedCharacter.SkillsSource[2]}" />
+                                <Image Source="{Binding SelectedCharacter.SkillsSource[3]}" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button Width="100"
+                                Margin="0,5,0,0"
+                                Style="{StaticResource YellowButton}"
+                                Command="{Binding SaveLargeImage}"
+                                Content="下载图片" />
+                        <Button Width="100"
+                                Margin="20,5,10,0"
+                                Style="{StaticResource YellowButton}"
+                                Command="{Binding HideSidePanel}"
+                                Content="隐藏面板" />
                     </StackPanel>
-                </ScrollViewer>
+                </Grid>
             </Border>
         </Border>
 
-        <Border Name="BigImgBox"
-                Grid.ColumnSpan="2"
-                MouseUp="BigImgBox_Click"
-                Visibility="Hidden">
+        <Border Grid.ColumnSpan="2" Visibility="{Binding LargeImageVisibility}">
+            <Border.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding HideLargeImage}" />
+            </Border.InputBindings>
             <Border.Background>
                 <SolidColorBrush Opacity="0.75" Color="Black" />
             </Border.Background>
-            <Image RenderOptions.BitmapScalingMode="Fant" />
+            <Image RenderOptions.BitmapScalingMode="Fant" Source="{Binding SelectedCharacter.ImageSource}" />
         </Border>
     </Grid>
 </Window>

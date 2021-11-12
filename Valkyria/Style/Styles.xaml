@@ -63,4 +63,65 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="YellowButton" TargetType="Button">
+        <Setter Property="Background" Value="#ffe14b" />
+        <Setter Property="Foreground" Value="#313131" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            Padding="{TemplateBinding Padding}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="2" Opacity="0.2" ShadowDepth="1" />
+                        </Border.Effect>
+                        <Grid>
+                            <Border x:Name="border"
+                                    Padding="2.5,0"
+                                    Background="White"
+                                    CornerRadius="6"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    SnapsToDevicePixels="True">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="RenderTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <SkewTransform AngleX="-20" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Border.Style>
+                                <Border Background="{TemplateBinding Background}" CornerRadius="6" SnapsToDevicePixels="True" />
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                              Focusable="False"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
